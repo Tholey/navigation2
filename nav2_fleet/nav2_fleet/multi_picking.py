@@ -14,7 +14,7 @@
 # limitations under the License.
 from random import randint
 from geometry_msgs.msg import PoseStamped
-from nav2_simple_commander.new_robot_navigator import NewBasicNavigator, NewNavigationResult
+from nav2_fleet.new_robot_navigator import NewBasicNavigator, NewNavigationResult
 
 import rclpy
 from rclpy.duration import Duration

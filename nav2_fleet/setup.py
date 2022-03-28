@@ -25,7 +25,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-                'multi_picking = nav2_simple_commander.multi_picking:main',
+                'multi_picking = nav2_fleet.multi_picking:main',
         ],
     },
 )
