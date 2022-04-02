@@ -21,7 +21,7 @@ The robots co-exist on a shared environment and are controlled by independent na
 """
 
 import os
-
+import sys
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
@@ -29,19 +29,29 @@ from launch.actions import (DeclareLaunchArgument, ExecuteProcess, GroupAction,
                             IncludeLaunchDescription, LogInfo)
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, TextSubstitution
+from launch.substitutions import LaunchConfiguration, TextSubstitution, PythonExpression
 
 
 def generate_launch_description():
     # Get the launch directory
     bringup_dir = get_package_share_directory('nav2_bringup')
     launch_dir = os.path.join(bringup_dir, 'launch')
+    fleet_dir = get_package_share_directory('nav2_fleet')
     warehouse_dir = get_package_share_directory('aws_robomaker_small_warehouse_world')
 
     # Names and poses of the robots
     robots = [
         {'name': 'robot1', 'x_pose': -0.205, 'y_pose': 7.403, 'z_pose': 0.01},
-        {'name': 'robot2', 'x_pose': -0.073, 'y_pose': -8.497, 'z_pose': 0.01}]
+        {'name': 'robot2', 'x_pose': -0.073, 'y_pose': -8.497, 'z_pose': 0.01},
+        {'name': 'robot3', 'x_pose': 6.217, 'y_pose': 2.153, 'z_pose': 0.01},
+        {'name': 'robot4', 'x_pose': -6.349, 'y_pose': 9.147, 'z_pose': 0.01}]
+    n_robots = -1
+    for arg in sys.argv:
+        if arg.startswith("n_robots:="):
+            n_robots = int(arg.split(":=")[1])
+    if n_robots < 1 or n_robots > 4:
+        n_robots = 2
+    robots = robots[:n_robots]
 
     # Simulation settings
     world = LaunchConfiguration('world')
@@ -56,7 +66,7 @@ def generate_launch_description():
     use_rviz = LaunchConfiguration('use_rviz')
     log_settings = LaunchConfiguration('log_settings', default='true')
 
-    # Declare the launch arguments
+    # Declare the launch arguments    
     declare_world_cmd = DeclareLaunchArgument(
         'world',
         default_value=os.path.join(bringup_dir, 'worlds', 'world_only.model'),
@@ -74,13 +84,23 @@ def generate_launch_description():
 
     declare_robot1_params_file_cmd = DeclareLaunchArgument(
         'robot1_params_file',
-        default_value=os.path.join(bringup_dir, 'params', 'nav2_multirobot_params_1.yaml'),
+        default_value=os.path.join(fleet_dir, 'nav2_multirobot_params_1.yaml'),
         description='Full path to the ROS2 parameters file to use for robot1 launched nodes')
 
     declare_robot2_params_file_cmd = DeclareLaunchArgument(
         'robot2_params_file',
-        default_value=os.path.join(bringup_dir, 'params', 'nav2_multirobot_params_2.yaml'),
+        default_value=os.path.join(fleet_dir, 'nav2_multirobot_params_2.yaml'),
         description='Full path to the ROS2 parameters file to use for robot2 launched nodes')
+
+    declare_robot3_params_file_cmd = DeclareLaunchArgument(
+        'robot3_params_file',
+        default_value=os.path.join(fleet_dir, 'nav2_multirobot_params_3.yaml'),
+        description='Full path to the ROS2 parameters file to use for robot3 launched nodes')
+
+    declare_robot4_params_file_cmd = DeclareLaunchArgument(
+        'robot4_params_file',
+        default_value=os.path.join(fleet_dir, 'nav2_multirobot_params_4.yaml'),
+        description='Full path to the ROS2 parameters file to use for robot4 launched nodes')
 
     declare_autostart_cmd = DeclareLaunchArgument(
         'autostart', default_value='true',
@@ -183,6 +203,8 @@ def generate_launch_description():
     ld.add_action(declare_map_yaml_cmd)
     ld.add_action(declare_robot1_params_file_cmd)
     ld.add_action(declare_robot2_params_file_cmd)
+    ld.add_action(declare_robot3_params_file_cmd)
+    ld.add_action(declare_robot4_params_file_cmd)
     ld.add_action(declare_use_rviz_cmd)
     ld.add_action(declare_autostart_cmd)
     ld.add_action(declare_rviz_config_file_cmd)

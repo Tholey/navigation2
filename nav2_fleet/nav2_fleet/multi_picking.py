@@ -12,6 +12,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import sys
+import getopt
 from random import randint
 from geometry_msgs.msg import PoseStamped
 from nav2_fleet.new_robot_navigator import NewBasicNavigator, NewNavigationResult
@@ -19,7 +21,23 @@ from nav2_fleet.new_robot_navigator import NewBasicNavigator, NewNavigationResul
 import rclpy
 from rclpy.duration import Duration
 
-n_robots = 2
+n_robots = -1
+arg_help = "{0} -n <n_robots> with 0 < n <= 4".format(sys.argv[0])
+try:
+    opts, args = getopt.getopt(sys.argv[1:], "hn:", ["help", "n_robots="])
+except:
+    print("No valid input for the number of robots. Default is 2")
+    sys.exit(2)
+
+for opt, arg in opts:
+    if opt in ("-h", "--help"):
+        print(arg_help)  # print the help message
+        sys.exit(2)
+    elif opt in ("-n", "--n_robots"):
+        n_robots = int(arg)
+        
+if n_robots < 1 or n_robots > 4:
+    n_robots = 2
 n_shelves = 4
 n_destinations = 4
 
