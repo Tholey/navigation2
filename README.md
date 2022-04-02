@@ -4,7 +4,7 @@
 
 This package provides a simulation of a fleet of robots in a a warehouse environment (AWS RoboMaker Small Warehouse World). The simulation can include up to 4 robots. Tasks are regularly sent to the robots : go to a shelf to pick an item and ship it at a specified location. This project is based on ROS2 and uses Nav2 framework for robots navigation. This was built by [Pierre Herent](https://www.linkedin.com/in/pierre-hv/).
 
-![](media/readme.gif)
+![](nav2_fleet/media/readme.gif)
 
 ## Requirements
 
