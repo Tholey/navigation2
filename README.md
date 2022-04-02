@@ -48,4 +48,3 @@ After a few seconds, the robots should move !
 
 The Python program that assigns tasks and manage the robots is `nav2_fleet/nav2_fleet/multi_picking.py`. 
 The program doesn't handle robots collisions yet : they are likely to bump each other. This problem will be solved in a future update.
-The program 
